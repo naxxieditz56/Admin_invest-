@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Configuration - Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* Include the admin-improved.css styles here */
+    /* For brevity, I'm including only the security-specific styles */
+    
+    .security-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px;
+    }
+
+    .security-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+    }
+
+    .security-header h1 {
+      font-size: 28px;
+      color: #333;
+    }
+
+    .security-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      background: #e8f5e9;
+      color: #2e7d32;
+      border-radius: 10px;
+    }
+
+    .security-status i {
+      font-size: 20px;
+    }
+
+    .security-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .security-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .security-card h3 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+
+    .security-card h3 i {
+      color: #667eea;
+    }
+
+    .security-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .security-option:last-child {
+      border-bottom: none;
+    }
+
+    .option-info h4 {
+      color: #333;
+      margin-bottom: 5px;
+      font-size: 15px;
+    }
+
+    .option-info p {
+      color: #666;
+      font-size: 12px;
+    }
+
+    /* Toggle Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #667eea;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    /* Password Strength Meter */
+    .password-strength {
+      margin-top: 10px;
+    }
+
+    .strength-bar {
+      height: 5px;
+      background: #e0e0e0;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 5px;
+    }
+
+    .strength-fill {
+      height: 100%;
+      width: 0%;
+      transition: all 0.3s ease;
+    }
+
+    .strength-fill.weak {
+      width: 33.33%;
+      background: #f44336;
+    }
+
+    .strength-fill.medium {
+      width: 66.66%;
+      background: #ff9800;
+    }
+
+    .strength-fill.strong {
+      width: 100%;
+      background: #4caf50;
+    }
+
+    /* Session List */
+    .session-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .session-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .session-device {
+      width: 40px;
+      height: 40px;
+      background: #667eea;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .session-details h4 {
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .session-details p {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .session-current {
+      background: #e8f5e9;
+      border-left: 4px solid #4caf50;
+    }
+
+    .terminate-btn {
+      padding: 8px 15px;
+      background: #f44336;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .terminate-btn:hover {
+      background: #d32f2f;
+    }
+
+    /* 2FA Setup */
+    .qrcode-container {
+      text-align: center;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+
+    .backup-codes {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .backup-code {
+      padding: 10px;
+      background: #f8f9fa;
+      border: 1px dashed #667eea;
+      border-radius: 5px;
+      text-align: center;
+      font-family: monospace;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="security-container">
+    <div class="security-header">
+      <h1><i class="fas fa-shield-alt"></i> Security Configuration</h1>
+      <div class="security-status">
+        <i class="fas fa-check-circle"></i>
+        <span>Security Level: High</span>
+      </div>
+    </div>
+
+    <!-- Security Grid -->
+    <div class="security-grid">
+      <!-- Authentication Settings -->
+      <div class="security-card">
+        <h3><i class="fas fa-lock"></i> Authentication</h3>
+        
+        <div class="security-option">
+          <div class="option-info">
+            <h4>Two-Factor Authentication</h4>
+            <p>Require 2FA for all admin accounts</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="enable2FA" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="security-option">
+          <div class="option-info">
+            <h4>Session Timeout</h4>
+            <p>Automatically logout after inactivity</p>
+          </div>
+          <select id="sessionTimeout" style="padding: 8px; border-radius: 5px; border: 1px solid #ddd;">
+            <option value="30">30 minutes</option>
+            <option value="60">1 hour</option>
+            <option value="120">2 hours</option>
+            <option value="240">4 hours</option>
+          </select>
+        </div>
+
+        <div class="security-option">
+          <div class="option-info">
+            <h4>Max Login Attempts</h4>
+            <p>Lock account after failed attempts</p>
+          </div>
+          <select id="maxAttempts" style="padding: 8px; border-radius: 5px; border: 1px solid #ddd;">
+            <option value="3">3 attempts</option>
+            <option value="5" selected>5 attempts</option>
+            <option value="10">10 attempts</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Password Policy -->
+      <div class="security-card">
+        <h3><i class="fas fa-key"></i> Password Policy</h3>
+        
+        <div class="security-option">
+          <div class="option-info">
+            <h4>Minimum Length</h4>
+            <p>Require minimum password length</p>
+          </div>
+          <input type="number" id="minLength" value="8" min="6" max="20" style="width: 60px; padding: 5px;">
+        </div>
+
+        <div class="security-option">
+          <div class="option-info">
+            <h4>Require Special Characters</h4>
+            <p>Must include !@#$%^&*</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="requireSpecial" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="security-option">
+          <div class="option-info">
+            <h4>Require Numbers</h4>
+            <p>Must include 0-9</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="requireNumbers" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="security-option">
+          <div class="option-info">
+            <h4>Password Expiry</h4>
+            <p>Force password change every</p>
+          </div>
+          <select id="passwordExpiry" style="padding: 8px; border-radius: 5px; border: 1px solid #ddd;">
+            <option value="30">30 days</option>
+            <option value="60">60 days</option>
+            <option value="90" selected>90 days</option>
+            <option value="never">Never</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- IP & Access Control -->
+      <div class="security-card">
+        <h3><i class="fas fa-globe"></i> IP Access Control</h3>
+        
+        <div class="security-option">
+          <div class="option-info">
+            <h4>IP Whitelist</h4>
+            <p>Only allow access from these IPs</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="enableWhitelist">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div style="margin-top: 15px;">
+          <textarea id="whitelistIPs" placeholder="Enter IP addresses (one per line)" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" disabled></textarea>
+        </div>
+
+        <div class="security-option" style="margin-top: 15px;">
+          <div class="option-info">
+            <h4>Auto-block Suspicious IPs</h4>
+            <p>Block IPs with multiple failed attempts</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="autoBlockIP" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- 2FA Setup -->
+      <div class="security-card">
+        <h3><i class="fas fa-mobile-alt"></i> Two-Factor Authentication</h3>
+        
+        <div id="2faStatus">
+          <div class="security-option">
+            <div class="option-info">
+              <h4>Status</h4>
+              <p>2FA is currently enabled</p>
+            </div>
+            <span class="badge" style="background: #4caf50; color: white; padding: 5px 10px; border-radius: 5px;">Enabled</span>
+          </div>
+
+          <button class="btn btn-primary" style="width: 100%; margin-top: 15px;" onclick="setup2FA()">
+            <i class="fas fa-qrcode"></i> Reconfigure 2FA
+          </button>
+        </div>
+
+        <div id="2faSetup" style="display: none;">
+          <div class="qrcode-container">
+            <div id="qrcode"></div>
+            <p style="margin-top: 10px;">Scan this QR code with Google Authenticator</p>
+          </div>
+
+          <p style="margin: 15px 0;">Or enter this key manually:</p>
+          <input type="text" id="secretKey" class="form-control" value="JBSWY3DPEHPK3PXP" readonly>
+
+          <h4 style="margin: 20px 0 10px;">Backup Codes</h4>
+          <div class="backup-codes">
+            <div class="backup-code">12345-67890</div>
+            <div class="backup-code">23456-78901</div>
+            <div class="backup-code">34567-89012</div>
+            <div class="backup-code">45678-90123</div>
+            <div class="backup-code">56789-01234</div>
+            <div class="backup-code">67890-12345</div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <input type="text" class="form-control" placeholder="Enter verification code" style="margin-bottom: 10px;">
+            <button class="btn btn-primary" style="width: 100%;">Verify & Enable</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Sessions -->
+    <div class="security-card" style="margin-top: 20px;">
+      <h3><i class="fas fa-history"></i> Active Sessions</h3>
+      
+      <div id="activeSessions">
+        <div class="session-item session-current">
+          <div class="session-info">
+            <div class="session-device">
+              <i class="fas fa-laptop"></i>
+            </div>
+            <div class="session-details">
+              <h4>Current Session</h4>
+              <p>Windows · Chrome 98 · Mumbai, India</p>
+              <p style="font-size: 11px;">IP: 192.168.1.100 · Last active: Now</p>
+            </div>
+          </div>
+          <span class="badge" style="background: #4caf50; color: white;">Current</span>
+        </div>
+
+        <div class="session-item">
+          <div class="session-info">
+            <div class="session-device">
+              <i class="fas fa-mobile-alt"></i>
+            </div>
+            <div class="session-details">
+              <h4>Mobile Device</h4>
+              <p>iPhone 13 · Safari · Delhi, India</p>
+              <p style="font-size: 11px;">IP: 192.168.1.101 · Last active: 2 hours ago</p>
+            </div>
+          </div>
+          <button class="terminate-btn">Terminate</button>
+        </div>
+
+        <div class="session-item">
+          <div class="session-info">
+            <div class="session-device">
+              <i class="fas fa-laptop"></i>
+            </div>
+            <div class="session-details">
+              <h4>Unknown Device</h4>
+              <p>Firefox · Linux · Beijing, China</p>
+              <p style="font-size: 11px;">IP: 203.45.67.89 · Last active: 1 day ago</p>
+            </div>
+          </div>
+          <button class="terminate-btn">Terminate</button>
+        </div>
+      </div>
+
+      <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" onclick="terminateAllSessions()">
+        <i class="fas fa-sign-out-alt"></i> Terminate All Other Sessions
+      </button>
+    </div>
+
+    <!-- Activity Log -->
+    <div class="security-card" style="margin-top: 20px;">
+      <h3><i class="fas fa-list"></i> Recent Security Events</h3>
+      
+      <table class="data-table" style="width: 100%;">
+        <thead>
+          <tr>
+            <th>Event</th>
+            <th>IP Address</th>
+            <th>Location</th>
+            <th>Date/Time</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Login Success</td>
+            <td>192.168.1.100</td>
+            <td>Mumbai, India</td>
+            <td>2026-02-21 10:30 AM</td>
+            <td><span class="badge success">Success</span></td>
+          </tr>
+          <tr>
+            <td>Login Failed</td>
+            <td>203.45.67.89</td>
+            <td>Beijing, China</td>
+            <td>2026-02-21 09:15 AM</td>
+            <td><span class="badge error">Failed</span></td>
+          </tr>
+          <tr>
+            <td>Password Change</td>
+            <td>192.168.1.100</td>
+            <td>Mumbai, India</td>
+            <td>2026-02-20 04:30 PM</td>
+            <td><span class="badge success">Success</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // Load saved settings
+    window.addEventListener('load', () => {
+      loadSecuritySettings();
+    });
+
+    function loadSecuritySettings() {
+      // Load from localStorage or Firebase
+      const settings = JSON.parse(localStorage.getItem('adminSecurity')) || {};
+      
+      document.getElementById('enable2FA').checked = settings.enable2FA !== false;
+      document.getElementById('sessionTimeout').value = settings.sessionTimeout || '60';
+      document.getElementById('maxAttempts').value = settings.maxAttempts || '5';
+      document.getElementById('minLength').value = settings.minLength || 8;
+      document.getElementById('requireSpecial').checked = settings.requireSpecial !== false;
+      document.getElementById('requireNumbers').checked = settings.requireNumbers !== false;
+      document.getElementById('passwordExpiry').value = settings.passwordExpiry || '90';
+      document.getElementById('enableWhitelist').checked = settings.enableWhitelist || false;
+      document.getElementById('autoBlockIP').checked = settings.autoBlockIP !== false;
+      
+      if (settings.whitelistIPs) {
+        document.getElementById('whitelistIPs').value = settings.whitelistIPs.join('\n');
+      }
+    }
+
+    function saveSecuritySettings() {
+      const settings = {
+        enable2FA: document.getElementById('enable2FA').checked,
+        sessionTimeout: document.getElementById('sessionTimeout').value,
+        maxAttempts: document.getElementById('maxAttempts').value,
+        minLength: document.getElementById('minLength').value,
+        requireSpecial: document.getElementById('requireSpecial').checked,
+        requireNumbers: document.getElementById('requireNumbers').checked,
+        passwordExpiry: document.getElementById('passwordExpiry').value,
+        enableWhitelist: document.getElementById('enableWhitelist').checked,
+        autoBlockIP: document.getElementById('autoBlockIP').checked,
+        whitelistIPs: document.getElementById('whitelistIPs').value.split('\n').filter(ip => ip.trim())
+      };
+      
+      localStorage.setItem('adminSecurity', JSON.stringify(settings));
+      alert('Security settings saved!');
+    }
+
+    function setup2FA() {
+      document.getElementById('2faStatus').style.display = 'none';
+      document.getElementById('2faSetup').style.display = 'block';
+      
+      // In production, generate real QR code
+      // You would use a library like qrcode.js
+    }
+
+    function terminateAllSessions() {
+      if (confirm('This will log out all other devices. Continue?')) {
+        alert('All other sessions terminated');
+      }
+    }
+
+    // Password strength checker
+    document.getElementById('minLength').addEventListener('input', updatePasswordStrength);
+    document.getElementById('requireSpecial').addEventListener('change', updatePasswordStrength);
+    document.getElementById('requireNumbers').addEventListener('change', updatePasswordStrength);
+
+    function updatePasswordStrength() {
+      const minLength = parseInt(document.getElementById('minLength').value) || 8;
+      const requireSpecial = document.getElementById('requireSpecial').checked;
+      const requireNumbers = document.getElementById('requireNumbers').checked;
+      
+      let strength = 'weak';
+      if (minLength >= 10 && requireSpecial && requireNumbers) {
+        strength = 'strong';
+      } else if (minLength >= 8 && (requireSpecial || requireNumbers)) {
+        strength = 'medium';
+      }
+      
+      const fill = document.querySelector('.strength-fill');
+      if (fill) {
+        fill.className = `strength-fill ${strength}`;
+      }
+    }
+
+    // Auto-save on changes
+    document.querySelectorAll('input, select').forEach(input => {
+      input.addEventListener('change', saveSecuritySettings);
+    });
+  </script>
+</body>
+</html>
