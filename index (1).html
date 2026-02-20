@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Cadbury Dairy Milk</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: #f5f7fb;
+    }
+
+    .admin-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .admin-sidebar {
+      width: 280px;
+      background: linear-gradient(180deg, #1a1f2b 0%, #2d2f3b 100%);
+      color: #fff;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-header {
+      padding: 30px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .sidebar-header .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .sidebar-header .logo i {
+      color: #667eea;
+      font-size: 28px;
+    }
+
+    /* Admin Profile */
+    .admin-profile {
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .admin-avatar {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 50%;
+      margin: 0 auto 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid rgba(255,255,255,0.2);
+    }
+
+    .admin-avatar i {
+      font-size: 40px;
+      color: white;
+    }
+
+    .admin-profile h4 {
+      font-size: 16px;
+      margin-bottom: 5px;
+      color: white;
+    }
+
+    .admin-profile p {
+      font-size: 12px;
+      opacity: 0.7;
+      margin-bottom: 10px;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .admin-badge {
+      background: rgba(255,255,255,0.1);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      color: #667eea;
+      background: rgba(102, 126, 234, 0.2);
+      display: inline-block;
+    }
+
+    /* Navigation Menu */
+    .admin-nav {
+      padding: 20px 0;
+    }
+
+    .nav-section {
+      margin-bottom: 20px;
+    }
+
+    .nav-section-title {
+      padding: 0 20px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 10px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      margin: 2px 10px;
+      border-radius: 10px;
+      position: relative;
+    }
+
+    .nav-item i {
+      width: 24px;
+      font-size: 18px;
+      margin-right: 12px;
+    }
+
+    .nav-item span {
+      flex: 1;
+      font-size: 14px;
+    }
+
+    .nav-item .badge {
+      background: #f56565;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .nav-item.active {
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Main Content */
+    .admin-main {
+      flex: 1;
+      margin-left: 280px;
+      padding: 30px;
+    }
+
+    /* Top Header */
+    .admin-header {
+      background: white;
+      border-radius: 15px;
+      padding: 20px 30px;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .header-search {
+      display: flex;
+      align-items: center;
+      background: #f5f7fb;
+      border-radius: 10px;
+      padding: 10px 20px;
+      width: 300px;
+    }
+
+    .header-search i {
+      color: #a0aec0;
+      margin-right: 10px;
+    }
+
+    .header-search input {
+      border: none;
+      background: none;
+      outline: none;
+      width: 100%;
+      font-size: 14px;
+    }
+
+    .header-search input::placeholder {
+      color: #a0aec0;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .notification-icon {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .notification-icon i {
+      font-size: 20px;
+      color: #4a5568;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #f56565;
+      color: white;
+      font-size: 10px;
+      padding: 2px 5px;
+      border-radius: 10px;
+      min-width: 18px;
+      text-align: center;
+    }
+
+    .admin-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .admin-user:hover {
+      background: #f5f7fb;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .user-info h4 {
+      font-size: 14px;
+      color: #2d3748;
+    }
+
+    .user-info p {
+      font-size: 12px;
+      color: #718096;
+    }
+
+    /* Loading State */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .loading-content {
+      text-align: center;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-content p {
+      color: #4a5568;
+      font-size: 16px;
+    }
+
+    .loading-content small {
+      color: #a0aec0;
+      font-size: 12px;
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .quick-action-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px solid #e2e8f0;
+    }
+
+    .quick-action-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+      border-color: #667eea;
+    }
+
+    .quick-action-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .quick-action-icon i {
+      font-size: 24px;
+      color: white;
+    }
+
+    .quick-action-info h4 {
+      font-size: 14px;
+      color: #2d3748;
+      margin-bottom: 5px;
+    }
+
+    .quick-action-info p {
+      font-size: 12px;
+      color: #718096;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .stat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .stat-header h3 {
+      font-size: 14px;
+      color: #718096;
+      font-weight: 500;
+    }
+
+    .stat-header i {
+      font-size: 20px;
+      color: #667eea;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 5px;
+    }
+
+    .stat-change {
+      font-size: 12px;
+      color: #48bb78;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .admin-sidebar {
+        width: 80px;
+      }
+      
+      .sidebar-header .logo span,
+      .admin-profile h4,
+      .admin-profile p,
+      .admin-badge,
+      .nav-item span,
+      .nav-section-title {
+        display: none;
+      }
+      
+      .nav-item {
+        justify-content: center;
+        padding: 15px;
+      }
+      
+      .nav-item i {
+        margin-right: 0;
+      }
+      
+      .admin-main {
+        margin-left: 80px;
+      }
+      
+      .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .admin-header {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .header-search {
+        width: 100%;
+      }
+      
+      .quick-actions {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <p>Admin Panel</p>
+      <small>Loading...</small>
+    </div>
+  </div>
+
+  <div class="admin-container" style="display: none;" id="adminContainer">
+    <!-- Sidebar -->
+    <div class="admin-sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <i class="fas fa-crown"></i>
+          <span>Admin Panel</span>
+        </div>
+      </div>
+      
+      <div class="admin-profile">
+        <div class="admin-avatar" id="adminAvatar">
+          <i class="fas fa-user-shield"></i>
+        </div>
+        <h4 id="adminName">Super Administrator</h4>
+        <p id="adminRole">Full Access</p>
+        <span class="admin-badge" id="adminBadge">Active</span>
+      </div>
+      
+      <div class="admin-nav">
+        <!-- Main Section -->
+        <div class="nav-section">
+          <div class="nav-section-title">Main</div>
+          <a href="index.html" class="nav-item active">
+            <i class="fas fa-chart-pie"></i>
+            <span>Dashboard</span>
+          </a>
+          <a href="users.html" class="nav-item">
+            <i class="fas fa-users"></i>
+            <span>User Management</span>
+            <span class="badge" id="userBadge">12</span>
+          </a>
+          <a href="investments.html" class="nav-item">
+            <i class="fas fa-chart-line"></i>
+            <span>Investments</span>
+          </a>
+          <a href="transactions.html" class="nav-item">
+            <i class="fas fa-exchange-alt"></i>
+            <span>Transactions</span>
+          </a>
+        </div>
+        
+        <!-- Management Section -->
+        <div class="nav-section">
+          <div class="nav-section-title">Management</div>
+          <a href="products.html" class="nav-item">
+            <i class="fas fa-box"></i>
+            <span>Products</span>
+          </a>
+          <a href="referrals.html" class="nav-item">
+            <i class="fas fa-sitemap"></i>
+            <span>Referrals</span>
+          </a>
+          <a href="checkin.html" class="nav-item">
+            <i class="fas fa-calendar-check"></i>
+            <span>Check-In</span>
+          </a>
+          <a href="notifications.html" class="nav-item">
+            <i class="fas fa-bell"></i>
+            <span>Notifications</span>
+            <span class="badge">3</span>
+          </a>
+        </div>
+        
+        <!-- System Section -->
+        <div class="nav-section">
+          <div class="nav-section-title">System</div>
+          <a href="security.html" class="nav-item">
+            <i class="fas fa-shield-alt"></i>
+            <span>Security</span>
+          </a>
+          <a href="roles.html" class="nav-item">
+            <i class="fas fa-user-tag"></i>
+            <span>Roles & Permissions</span>
+          </a>
+          <a href="settings.html" class="nav-item">
+            <i class="fas fa-cog"></i>
+            <span>System Settings</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="admin-main">
+      <!-- Top Header -->
+      <div class="admin-header">
+        <div class="header-search">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search anything...">
+        </div>
+        
+        <div class="header-actions">
+          <div class="notification-icon">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge">5</span>
+          </div>
+          
+          <div class="admin-user" onclick="toggleUserMenu()">
+            <div class="user-avatar" id="headerAvatar">AD</div>
+            <div class="user-info">
+              <h4 id="headerName">Admin User</h4>
+              <p id="headerRole">Super Admin</p>
+            </div>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <div class="quick-action-card" onclick="location.href='users.html?action=add'">
+          <div class="quick-action-icon">
+            <i class="fas fa-user-plus"></i>
+          </div>
+          <div class="quick-action-info">
+            <h4>+ Add New User</h4>
+            <p>Create user account</p>
+          </div>
+        </div>
+        
+        <div class="quick-action-card" onclick="location.href='products.html?action=add'">
+          <div class="quick-action-icon">
+            <i class="fas fa-plus-circle"></i>
+          </div>
+          <div class="quick-action-info">
+            <h4>Add Product</h4>
+            <p>Create new product</p>
+          </div>
+        </div>
+        
+        <div class="quick-action-card" onclick="processDailyProfits()">
+          <div class="quick-action-icon">
+            <i class="fas fa-coins"></i>
+          </div>
+          <div class="quick-action-info">
+            <h4>Process Profits</h4>
+            <p>Run daily earnings</p>
+          </div>
+        </div>
+        
+        <div class="quick-action-card" onclick="exportReport()">
+          <div class="quick-action-icon">
+            <i class="fas fa-file-export"></i>
+          </div>
+          <div class="quick-action-info">
+            <h4>Export Report</h4>
+            <p>Download analytics</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <h3>Total Users</h3>
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-value" id="totalUsers">1,234</div>
+          <div class="stat-change">
+            <i class="fas fa-arrow-up"></i>
+            <span>+12 today</span>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-header">
+            <h3>Active Investments</h3>
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="stat-value" id="activeInvestments">856</div>
+          <div class="stat-change">
+            <i class="fas fa-arrow-up"></i>
+            <span>+8 today</span>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-header">
+            <h3>Total Volume</h3>
+            <i class="fas fa-rupee-sign"></i>
+          </div>
+          <div class="stat-value" id="totalVolume">₹45.2L</div>
+          <div class="stat-change">
+            <i class="fas fa-arrow-up"></i>
+            <span>+5.2%</span>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-header">
+            <h3>Pending Approvals</h3>
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-value" id="pendingApprovals">23</div>
+          <div class="stat-change">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>Requires action</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity Section -->
+      <div style="background: white; border-radius: 12px; padding: 20px; margin-top: 30px;">
+        <h3 style="color: #2d3748; margin-bottom: 20px;">Recent Activity</h3>
+        <div id="recentActivity">
+          <!-- Activity will be loaded here -->
+          <p style="color: #718096; text-align: center;">Loading activities...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Simulate loading
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.getElementById('loadingScreen').style.display = 'none';
+        document.getElementById('adminContainer').style.display = 'flex';
+        
+        // Load admin data from session/localStorage
+        loadAdminData();
+        loadStats();
+        loadRecentActivity();
+      }, 1500);
+    });
+
+    function loadAdminData() {
+      // Try to get from session storage first
+      let adminData = sessionStorage.getItem('adminData');
+      
+      if (!adminData) {
+        // Mock data for demo
+        adminData = {
+          name: 'Super Administrator',
+          role: 'Full Access',
+          email: 'admin@cadbury.com',
+          initials: 'AD'
+        };
+      } else {
+        adminData = JSON.parse(adminData);
+      }
+
+      // Update UI with admin data
+      document.getElementById('adminName').textContent = adminData.name || 'Super Administrator';
+      document.getElementById('adminRole').textContent = adminData.role || 'Full Access';
+      document.getElementById('headerName').textContent = adminData.name || 'Admin User';
+      document.getElementById('headerRole').textContent = adminData.role || 'Super Admin';
+      
+      // Set avatar initials
+      const name = adminData.name || 'Admin User';
+      const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+      document.getElementById('headerAvatar').textContent = initials;
+    }
+
+    function loadStats() {
+      // Mock stats update
+      document.getElementById('totalUsers').textContent = '1,234';
+      document.getElementById('activeInvestments').textContent = '856';
+      document.getElementById('totalVolume').textContent = '₹45.2L';
+      document.getElementById('pendingApprovals').textContent = '23';
+      document.getElementById('userBadge').textContent = '12';
+    }
+
+    function loadRecentActivity() {
+      const activities = [
+        { user: 'John Doe', action: 'Made an investment', time: '2 minutes ago', amount: '₹5,000' },
+        { user: 'Jane Smith', action: 'Requested withdrawal', time: '15 minutes ago', amount: '₹2,500' },
+        { user: 'Mike Johnson', action: 'Completed check-in', time: '1 hour ago', amount: '₹10' },
+        { user: 'Sarah Williams', action: 'Referred a friend', time: '3 hours ago', amount: '₹500' },
+        { user: 'Robert Brown', action: 'Made an investment', time: '5 hours ago', amount: '₹10,000' }
+      ];
+
+      let html = '';
+      activities.forEach(activity => {
+        html += `
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; border-bottom: 1px solid #e2e8f0;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="width: 40px; height: 40px; background: #f5f7fb; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-user" style="color: #667eea;"></i>
+              </div>
+              <div>
+                <h4 style="font-size: 14px; color: #2d3748;">${activity.user}</h4>
+                <p style="font-size: 12px; color: #718096;">${activity.action}</p>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <p style="font-size: 14px; font-weight: 600; color: #2d3748;">${activity.amount}</p>
+              <p style="font-size: 11px; color: #a0aec0;">${activity.time}</p>
+            </div>
+          </div>
+        `;
+      });
+
+      document.getElementById('recentActivity').innerHTML = html;
+    }
+
+    function toggleUserMenu() {
+      // Implement user menu dropdown
+      console.log('Toggle user menu');
+    }
+
+    function processDailyProfits() {
+      if (confirm('Process daily profits for all active investments?')) {
+        alert('Processing daily profits... This may take a few moments.');
+        // Add your profit processing logic here
+      }
+    }
+
+    function exportReport() {
+      alert('Generating report... The download will start shortly.');
+      // Add your export logic here
+    }
+
+    // Check authentication (if implemented)
+    function checkAuth() {
+      const isAuthenticated = sessionStorage.getItem('adminAuthenticated');
+      if (!isAuthenticated && window.location.pathname.includes('admin') && !window.location.pathname.includes('login')) {
+        window.location.href = 'login.html';
+      }
+    }
+    
+    // Uncomment if you have login system
+    // checkAuth();
+  </script>
+</body>
+</html>
